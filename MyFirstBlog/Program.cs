@@ -1,23 +1,52 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using MyFirstBlog.Helpers;
+using MyFirstBlog.Services;
 
-namespace MyFirstBlog
+var  MyAllowLocalhostOrigins = "_myAllowLocalhostOrigins";
+
+var builder = WebApplication.CreateBuilder(args);
+
+var services = builder.Services;
+var env = builder.Environment;
+
+// Add services to the container.
+
+services.AddDbContext<DataContext>();
+
+services.AddCors(policyBuilder => {
+    policyBuilder.AddPolicy( MyAllowLocalhostOrigins,
+        policy => {
+            policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+        });
+});
+
+services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+
+services.AddScoped<IPostService, PostService>();
+
+var app = builder.Build();
+
+var scope = app.Services.CreateScope();
+await DataHelper.ManageDataAsync(scope.ServiceProvider);
+
+// Configure the HTTP request pipeline.
+if (env.IsDevelopment())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
-    }
+    app.UseCors(MyAllowLocalhostOrigins);
 }
+
+if (env.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

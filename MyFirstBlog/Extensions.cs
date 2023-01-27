@@ -1,5 +1,5 @@
 using MyFirstBlog.Dtos;
-using MyFirstBlog.Models;
+using MyFirstBlog.Entities;
 
 namespace MyFirstBlog {
     public static class Extensions {
@@ -8,6 +8,7 @@ namespace MyFirstBlog {
             {
                 Id = post.Id,
                 Title = post.Title,
+                Slug = post.Slug,
                 Body = post.Body,
                 CreatedDate = post.CreatedDate
             };

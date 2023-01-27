@@ -1,39 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using MyFirstBlog.Dtos;
-using MyFirstBlog.Repositories;
+namespace MyFirstBlog.Controllers;
+
 using Microsoft.AspNetCore.Mvc;
+using MyFirstBlog.Dtos;
+using MyFirstBlog.Services;
 
-namespace MyFirstBlog.Controllers {
-    [ApiController]
-    [Route("posts")] // commonly done as "[controller]" which will take the controllers name. Currently both would be "/posts"
+[ApiController]
+[Route("posts")]
 
-    public class PostsController : ControllerBase {
-        private readonly IPostsRepository repository;
+public class PostsController : ControllerBase {
+    private IPostService _postService;
 
-        public PostsController(IPostsRepository repository) {
-            this.repository = repository;
+    public PostsController(IPostService postService) {
+        _postService = postService;
+    }
+
+    // Get /posts
+    [HttpGet]
+    public IEnumerable<PostDto> GetPosts() {
+        var posts = _postService.GetPosts().Select(post => post.AsDto());
+        
+        return posts;
+    }
+
+    // Get /posts/:slug
+    [HttpGet("{slug}")]
+    public ActionResult<PostDto> GetPost(string slug) {
+        var post = _postService.GetPost(slug);
+
+        if (post is null) {
+            return NotFound();
         }
 
-        // Get /posts
-        [HttpGet]
-        public IEnumerable<PostDto> GetPosts() {
-            var posts = repository.GetPosts().Select(post => post.AsDto());
-            
-            return posts;
-        }
-
-        // Get /posts/:id
-        [HttpGet("{id}")]
-        public ActionResult<PostDto> GetPost(Guid id) {
-            var post = repository.GetPost(id);
-
-            if (post is null) {
-                return NotFound();
-            }
-
-            return post.AsDto();
-        }
+        return post.AsDto();
     }
 }
