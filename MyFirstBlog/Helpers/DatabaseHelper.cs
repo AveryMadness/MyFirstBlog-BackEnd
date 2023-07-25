@@ -2,10 +2,10 @@ namespace MyFirstBlog.Helpers;
 
 using Microsoft.EntityFrameworkCore;
 
-public static class DataHelper
+public static class DatabaseHelper
 {
     
-    public static async Task ManageDataAsync(IServiceProvider svcProvider)
+    public static async Task ManageMigrationsAsync(IServiceProvider svcProvider)
     {
         //Service: An instance of db context
         var dbContextSvc = svcProvider.GetRequiredService<DataContext>();

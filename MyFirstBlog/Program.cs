@@ -29,7 +29,7 @@ services.AddScoped<IPostService, PostService>();
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();
-await DataHelper.ManageDataAsync(scope.ServiceProvider);
+await DatabaseHelper.ManageMigrationsAsync(scope.ServiceProvider);
 
 // Configure the HTTP request pipeline.
 if (env.IsDevelopment())
