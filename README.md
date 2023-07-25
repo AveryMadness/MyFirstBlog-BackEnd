@@ -20,7 +20,7 @@ First, we're going to install Postgres. This will be the database that the app u
 
 * To test that postgres was installed correctly and is running, run
 	``createdb bvc-blog``
-	This creates a database named mydb. 
+	This creates a database named bvc-blog which we will use for this application. 
 * Then run ``psql bvc-blog`` to start the psql command line tool
 * We will create a superuser for the application to use to interact with the database. Run the following to create a user called 'postgres' with a password of 'postgres'.
 	``CREATE ROLE postgres SUPERUSER LOGIN PASSWORD 'postgres';``
