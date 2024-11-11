@@ -9,6 +9,7 @@ public interface IPostService
 {
     IEnumerable<PostDto> GetPosts();
     PostDto GetPost(String slug);
+    void CreatePost(Post NewPost);
 }
 
 public class PostService : IPostService
@@ -33,5 +34,11 @@ public class PostService : IPostService
     private Post getPost(string slug)
     {
         return _context.Posts.Where(a=>a.Slug==slug.ToString()).SingleOrDefault();
+    }
+
+    public void CreatePost(Post NewPost)
+    {
+        _context.Posts.Add(NewPost);
+        _context.SaveChanges();
     }
 }
